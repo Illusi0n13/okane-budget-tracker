@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>お金トラッカー</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="loading" id="loadingOverlay"><div class="spin">🌸</div></div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">💴</div>
+    <div class="logo-text">
+      <h1>お金トラッカー</h1>
+      <p>Okane Budget Tracker</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <input type="month" class="month-pick" id="monthPicker">
+    <button class="btn-hdr pink" onclick="openBudgetModal()">⚡ Budget</button>
+    <div class="user-chip">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <span id="userName">...</span>
+    </div>
+    <button class="btn-hdr gray" onclick="doLogout()">↩ Out</button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" id="tab-dash" onclick="switchTab('dash')">🏠 Dashboard</button>
+  <button class="tab-btn" id="tab-exp" onclick="switchTab('exp')">💸 Expenses</button>
+  <button class="tab-btn" id="tab-inc" onclick="switchTab('inc')">💚 Income</button>
+  <button class="tab-btn" id="tab-year" onclick="switchTab('year')">📊 Yearly</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="tab-content active" id="content-dash">
+  <div class="hero">
+    <div class="anime-char" id="mascot" style="position:absolute;right:14px;bottom:0">🌸</div>
+    <div class="hero-top">
+      <div>
+        <div class="bgt-label">Money Left</div>
+        <div class="bgt-num" style="background:linear-gradient(135deg,#fff,var(--mint));-webkit-background-clip:text;-webkit-text-fill-color:transparent"><span class="cur">₹</span><span id="remNum">0</span></div>
+      </div>
+      <div style="text-align:right">
+        <div class="bgt-label">Today Spent</div>
+        <div style="font-size:16px;font-weight:800;color:var(--sky)" id="todayNum">₹0</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px" id="dateStr"></div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="sc sg"><div class="sn cg" id="incNum">₹0</div><div class="sl">💚 Income</div></div>
+      <div class="sc sp"><div class="sn cp" id="spentNum">₹0</div><div class="sl">💸 Spent</div></div>
+      <div class="sc so"><div class="sn co" id="budgetNum">₹0</div><div class="sl">🎯 Budget</div></div>
+      <div class="sc so"><div class="sn co" id="pctNum">0%</div><div class="sl">📊 Used</div></div>
+    </div>
+    <div class="pi"><span>Budget usage</span><span id="progLabel">₹0 / ₹0</span></div>
+    <div class="pb"><div class="pf" id="progFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="grid2">
+    <!-- Add panel -->
+    <div class="panel">
+      <div class="pt"><div class="ptl"><span class="dot"></span>Quick Add</div></div>
+      <div class="type-toggle">
+        <button class="tt ae" id="ttExp" onclick="setType('expense')">💸 Expense</button>
+        <button class="tt" id="ttInc" onclick="setType('income')">💚 Income</button>
+      </div>
+      <div class="cg-grid" id="catGrid"></div>
+      <div class="cprev" id="catPrev">🎯</div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">Amount (₹)</label><input type="number" class="fi" id="amtIn" placeholder="e.g. 50" min="0"></div>
+        <div class="fg"><label class="fl">Date</label><input type="date" class="fi" id="dateIn"></div>
+        <div class="fg full"><label class="fl">Description</label><input type="text" class="fi" id="descIn" placeholder="Add your expenses"></div>
+      </div>
+      <button class="btn-sub es" id="subBtn" onclick="addEntry()">＋ Add Expense</button>
+    </div>
+
+    <!-- Right column -->
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="panel" style="flex:1">
+        <div class="pt">
+          <div class="ptl"><span class="dot" style="background:var(--sky)"></span>Recent Log</div>
+          <span class="badge" id="cntBadge">0</span>
+        </div>
+        <div class="elist" id="recentList"><div class="empty"><div class="ei">🌙</div><p style="font-size:12px">Nothing yet~</p></div></div>
+      </div>
+      <div class="panel">
+        <div class="pt"><div class="ptl"><span class="dot" style="background:var(--lavender)"></span>Breakdown</div></div>
+        <div id="breakdown"><div class="empty" style="padding:10px"><p style="font-size:12px">No data ✨</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPENSES TAB -->
+<div class="tab-content" id="content-exp">
+  <div class="panel">
+    <div class="pt"><div class="ptl"><span class="dot"></span>All Expenses</div><span class="badge" id="expBadge">0</span></div>
+    <div class="elist tall" id="expList"><div class="empty"><div class="ei">💸</div><p style="font-size:12px">No expenses~</p></div></div>
+  </div>
+</div>
+
+<!-- INCOME TAB -->
+<div class="tab-content" id="content-inc">
+  <div class="panel">
+    <div class="pt"><div class="ptl"><span class="dot" style="background:#4CAF50;box-shadow:0 0 7px rgba(76,175,80,.5)"></span>All Income</div><span class="badge g" id="incBadge">0</span></div>
+    <div class="elist tall" id="incList"><div class="empty"><div class="ei">💰</div><p style="font-size:12px">No income~</p></div></div>
+  </div>
+</div>
+
+<!-- YEAR TAB -->
+<div class="tab-content" id="content-year">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px">
+    <div style="font-size:17px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--sakura));-webkit-background-clip:text;-webkit-text-fill-color:transparent">📊 Year Summary</div>
+    <input type="number" id="yearPick" style="background:var(--card2);border:1px solid var(--border);color:var(--text);padding:6px 11px;border-radius:9px;font-family:'Nunito',sans-serif;font-size:13px;outline:none;width:90px" min="2020" max="2099">
+  </div>
+  <div class="ycards">
+    <div class="ycard"><div class="yn cg" id="yrInc">₹0</div><div class="yl">Total Income</div></div>
+    <div class="ycard"><div class="yn cp" id="yrSp">₹0</div><div class="yl">Total Spent</div></div>
+    <div class="ycard"><div class="yn cm" id="yrNet">₹0</div><div class="yl">Net Savings</div></div>
+  </div>
+  <div class="mogrid" id="moGrid"></div>
+  <div class="roundoff" id="roBox" style="display:none">
+    <div class="roh3">🎊 Year Round-off</div>
+    <div class="ron" id="roNum">₹0</div>
+    <div class="ros" id="roSub"></div>
+    <div class="rogrid" id="roGrid"></div>
+  </div>
+</div>
+
+<!-- BUDGET MODAL -->
+<div class="moverlay" id="budgetModal">
+  <div class="modal">
+    <div class="mm">🌟</div>
+    <div class="mh2">Set Monthly Budget</div>
+    <div class="mp" id="budgetMonthLbl">This Month</div>
+    <div class="fg"><label class="fl">Budget Amount (₹)</label><input type="number" class="fi" id="budgetIn" placeholder="e.g. 10000" min="0" step="100"></div>
+    <div class="mbtns">
+      <button class="bcx2" onclick="closeModal()">Cancel</button>
+      <button class="bok" onclick="saveBudget()">Save ✨</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="tIcon">✅</span><span id="tMsg">Done!</span></div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
