@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Okane">
+<meta name="theme-color" content="#0D1117">
+<title>Okane Tracker</title>
+<style>
+:root{--pk:#FF6B9D;--sk:#7EC8E3;--sd:#4A90D9;--gd:#FFD166;--gdd:#F4A726;--mt:#06D6A0;--md:#059669;--lv:#C77DFF;--gr:#4CAF50;--grd:#2E7D32;--bg:#0D1117;--c1:#161B22;--c2:#1C2330;--tx:#E8EDF5;--mu:#8B949E;--br:rgba(255,255,255,.08);--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);padding-top:var(--st)}
+body{color:var(--tx);font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column}
+.screen{display:none;flex-direction:column;height:100%}
+.screen.A{display:flex}
+.gbg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 20%,rgba(199,125,255,.07),transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(255,107,157,.06),transparent 55%)}
+.ptcl{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+@keyframes fp{0%{transform:translateY(100vh);opacity:0}8%{opacity:.5}92%{opacity:.2}100%{transform:translateY(-80px);opacity:0}}
+@keyframes flt{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+@keyframes cf{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+@keyframes gl{0%,100%{box-shadow:0 0 10px rgba(255,107,157,.3)}50%{box-shadow:0 0 24px rgba(255,107,157,.6)}}
+@keyframes pb1{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* LOGIN */
+#L{justify-content:center;align-items:center;padding:20px;position:relative;overflow-y:auto}
+.lbox{position:relative;z-index:1;width:100%;max-width:340px;background:var(--c1);border:1px solid rgba(255,107,157,.2);border-radius:26px;padding:28px 22px;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+.mc{font-size:68px;text-align:center;display:block;margin-bottom:6px;animation:flt 3s ease-in-out infinite;filter:drop-shadow(0 0 22px rgba(255,107,157,.4))}
+.at{font-size:22px;font-weight:900;text-align:center;background:linear-gradient(135deg,var(--pk),var(--sk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
+.as{font-size:10px;color:var(--mu);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
+.atabs{display:flex;background:var(--c2);border-radius:13px;padding:3px;margin-bottom:20px}
+.atab{flex:1;padding:9px;border:none;border-radius:11px;background:none;color:var(--mu);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.atab.on{background:linear-gradient(135deg,var(--pk),var(--lv));color:#fff}
+.fr{display:flex;flex-direction:column;gap:3px;margin-bottom:12px}
+.fl{font-size:10px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
+.fi{background:var(--c2);border:1px solid var(--br);color:var(--tx);padding:12px 13px;border-radius:12px;font-size:15px;outline:none;width:100%;-webkit-appearance:none;font-family:inherit}
+.fi:focus{border-color:var(--sk)}
+.fi::placeholder{color:var(--mu)}
+.ba{width:100%;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--pk),var(--lv));color:#fff;font-size:15px;font-weight:900;cursor:pointer;margin-top:3px;font-family:inherit;letter-spacing:.5px}
+.ba:active{transform:scale(.97)}
+.aerr{background:rgba(255,107,157,.1);border:1px solid rgba(255,107,157,.3);border-radius:10px;padding:9px 12px;font-size:12px;color:var(--pk);margin-bottom:11px;display:none;text-align:center}
+.aerr.on{display:block}
+
+/* APP HEADER */
+#APP{background:var(--bg)}
+.hdr{position:relative;z-index:50;background:rgba(13,17,23,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--br);padding:9px 13px;display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap;flex-shrink:0}
+.hlogo{display:flex;align-items:center;gap:8px}
+.hico{width:33px;height:33px;background:linear-gradient(135deg,var(--pk),var(--lv));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;animation:gl 3s ease-in-out infinite;flex-shrink:0}
+.hname{font-size:13px;font-weight:900;background:linear-gradient(135deg,var(--pk),var(--sk));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hr{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.mpk{background:var(--c2);border:1px solid var(--br);color:var(--tx);padding:6px 9px;border-radius:9px;font-size:12px;outline:none;font-family:inherit;-webkit-appearance:none}
+.upill{background:var(--c2);border:1px solid var(--br);border-radius:100px;padding:4px 10px 4px 6px;display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700}
+.uav{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--lv));display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:900}
+.bo{background:none;border:1px solid var(--br);color:var(--mu);padding:5px 9px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit}
+
+/* TABS */
+.tabs{display:flex;background:var(--c1);border-bottom:1px solid var(--br);overflow-x:auto;scrollbar-width:none;flex-shrink:0;position:relative;z-index:10}
+.tabs::-webkit-scrollbar{display:none}
+.tb{padding:11px 14px;border:none;background:none;color:var(--mu);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-family:inherit}
+.tb.on{color:var(--tx);border-bottom-color:var(--pk)}
+
+/* SCROLL */
+.sa{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:1;padding-bottom:calc(10px + var(--sb))}
+.sa::-webkit-scrollbar{display:none}
+.tp{display:none;padding:11px}
+.tp.on{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--c1),rgba(28,35,48,.95));border:1px solid rgba(255,107,157,.2);border-radius:17px;padding:15px;margin-bottom:11px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(199,125,255,.09),transparent 70%);pointer-events:none}
+.htop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px;flex-wrap:wrap;gap:7px}
+.blb{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:2px;margin-bottom:3px}
+.bnum{font-size:30px;font-weight:900;line-height:1;background:linear-gradient(135deg,#fff,var(--gd));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.bnum .cur{font-size:16px}
+.ach{font-size:42px;animation:cf 4s ease-in-out infinite;filter:drop-shadow(0 0 12px rgba(199,125,255,.4))}
+.s4{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:11px}
+.sc{border-radius:11px;padding:10px 8px;text-align:center}
+.sc.sg{background:var(--c2);border:1px solid rgba(76,175,80,.3)}.sc.sp{background:var(--c2);border:1px solid rgba(255,107,157,.3)}.sc.sm{background:var(--c2);border:1px solid rgba(6,214,160,.3)}.sc.so{background:var(--c2);border:1px solid rgba(255,209,102,.3)}
+.sn{font-size:17px;font-weight:800;margin-bottom:2px}
+.cg{color:#4CAF50}.cp{color:var(--pk)}.cm{color:var(--mt)}.co{color:var(--gd)}
+.sl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.pi{display:flex;justify-content:space-between;margin-bottom:4px;font-size:10px;color:var(--mu)}
+.pb{height:8px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
+.pf{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--mt),var(--sk));transition:width .8s cubic-bezier(.4,0,.2,1)}
+.pf.wn{background:linear-gradient(90deg,var(--gd),#f90)}
+.pf.dg{background:linear-gradient(90deg,var(--pk),#f00);animation:pb1 1s ease-in-out infinite}
+
+/* PANEL */
+.pnl{background:var(--c1);border:1px solid var(--br);border-radius:15px;padding:14px;margin-bottom:11px}
+.ptit{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--mu);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.ptl{display:flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--pk);box-shadow:0 0 6px rgba(255,107,157,.5);flex-shrink:0}
+.bdg{background:rgba(255,107,157,.15);color:var(--pk);border:1px solid rgba(255,107,157,.25);border-radius:100px;padding:2px 8px;font-size:10px;font-weight:700}
+.bdg.g{background:rgba(76,175,80,.15);color:#4CAF50;border-color:rgba(76,175,80,.3)}
+
+/* BUDGET SET */
+.bgtr{display:flex;gap:7px;margin-top:0}
+.bgi{flex:1;background:var(--c2);border:1px solid var(--br);color:var(--tx);padding:11px 12px;border-radius:10px;font-size:14px;outline:none;font-family:inherit;-webkit-appearance:none}
+.bgi:focus{border-color:var(--gd)}
+.bgi::placeholder{color:var(--mu)}
+.bbg{padding:11px 14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gdd),var(--gd));color:#1a0800;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+.bbg:active{transform:scale(.96)}
+
+/* TYPE TOGGLE */
+.ttyp{display:flex;gap:5px;margin-bottom:9px}
+.tt{flex:1;padding:9px;border-radius:10px;border:1px solid var(--br);background:var(--c2);color:var(--mu);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.tt.ae{border-color:var(--pk);background:rgba(255,107,157,.1);color:var(--pk)}
+.tt.ai{border-color:#4CAF50;background:rgba(76,175,80,.1);color:#4CAF50}
+
+/* CATEGORIES */
+.cgd{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:7px}
+.cb{background:var(--c2);border:1px solid var(--br);border-radius:10px;padding:7px 2px;cursor:pointer;text-align:center;transition:all .18s;font-family:inherit;color:var(--mu)}
+.cb:active{transform:scale(.93)}
+.cb.on{border-color:var(--pk);background:rgba(255,107,157,.1);color:var(--tx)}
+.ce{font-size:17px;display:block;margin-bottom:1px}.cn{font-size:8px;font-weight:700}
+.cpv{text-align:center;padding:4px 0 7px;font-size:36px;animation:cf 2s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(199,125,255,.35))}
+
+/* FORM */
+.fgd{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.fg{display:flex;flex-direction:column;gap:3px}.fg.fl2{grid-column:1/-1}
+.fll{font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
+.fin{background:var(--c2);border:1px solid var(--br);color:var(--tx);padding:11px 12px;border-radius:11px;font-size:14px;outline:none;width:100%;-webkit-appearance:none;font-family:inherit}
+.fin:focus{border-color:var(--sk)}
+.fin::placeholder{color:var(--mu)}
+.bsb{width:100%;padding:13px;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;margin-top:9px;font-family:inherit}
+.bsb.es{background:linear-gradient(135deg,var(--sd),var(--md));color:#fff}
+.bsb.is{background:linear-gradient(135deg,var(--grd),var(--md));color:#fff}
+.bsb:active{transform:scale(.97)}
+
+/* ENTRY LIST */
+.el{display:flex;flex-direction:column;gap:6px}
+.dlb{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:2px;padding:3px 0 1px;display:flex;align-items:center;gap:6px}
+.dlb::after{content:'';flex:1;height:1px;background:var(--br)}
+.dtg{font-size:9px;font-weight:700}
+.ei{background:var(--c2);border:1px solid var(--br);border-radius:12px;padding:9px 11px;display:flex;align-items:center;gap:9px}
+.ei.ii{border-color:rgba(76,175,80,.17)}
+.eic{width:37px;height:37px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ein{flex:1;min-width:0}
+.ede{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eme{font-size:9px;color:var(--mu);margin-top:1px}
+.eam{font-size:13px;font-weight:800;white-space:nowrap}
+.aex{color:var(--pk)}.ain{color:#4CAF50}
+.eib{display:flex;gap:2px;flex-shrink:0}
+.bic{background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:4px 5px;border-radius:7px;line-height:1;font-family:inherit}
+.bic:active{transform:scale(.85)}
+.edr{display:none;padding:5px 9px 8px;gap:5px;flex-wrap:wrap;align-items:center}
+.edr.on{display:flex}
+.ei2{background:var(--bg);border:1px solid var(--br);color:var(--tx);padding:7px 9px;border-radius:8px;font-size:12px;outline:none;flex:1;min-width:75px;font-family:inherit}
+.ei2:focus{border-color:var(--gd)}
+.bsv{padding:7px 12px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--gdd),var(--gd));color:#1a0800;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit}
+.bcx{padding:7px 9px;border-radius:8px;border:1px solid var(--br);background:none;color:var(--mu);font-size:12px;cursor:pointer;font-family:inherit}
+
+/* YEAR */
+.ycs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.yc{background:var(--c1);border:1px solid var(--br);border-radius:12px;padding:11px;text-align:center}
+.yn{font-size:17px;font-weight:800;margin-bottom:2px}
+.yl{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.mog{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.moc{background:var(--c1);border:1px solid var(--br);border-radius:11px;padding:10px}
+.mn{font-size:10px;font-weight:800;color:var(--mu);margin-bottom:5px;text-transform:uppercase}
+.mb{font-size:12px;font-weight:800;color:var(--tx)}
+.ms{font-size:10px;color:var(--pk);margin-top:2px}
+.mi{font-size:10px;color:#4CAF50;margin-top:1px}
+.mba{height:3px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;margin-top:5px}
+.mf{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--mt),var(--sk))}
+.mf.ov{background:linear-gradient(90deg,var(--pk),#f00)}
+.ro{background:linear-gradient(135deg,rgba(255,209,102,.07),rgba(199,125,255,.07));border:1px solid rgba(255,209,102,.2);border-radius:13px;padding:14px;margin-top:12px;text-align:center}
+.roh{font-size:11px;color:var(--gd);margin-bottom:7px;letter-spacing:1px;text-transform:uppercase}
+.ron{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--gd),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ros{font-size:11px;color:var(--mu);margin-top:4px}
+.rog{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.roc{background:var(--c2);border-radius:9px;padding:8px;text-align:center}
+.rocn{font-size:14px;font-weight:800;margin-bottom:2px}
+.rocl{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+
+.emp{text-align:center;padding:22px 10px;color:var(--mu)}
+.ei_ic{font-size:34px;margin-bottom:6px;opacity:.45}
+.ld{position:fixed;inset:0;background:rgba(13,17,23,.75);z-index:900;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.ld.off{display:none}
+.spin{font-size:42px;animation:sp 1.2s linear infinite}
+.tst{position:fixed;bottom:calc(18px + var(--sb));left:12px;right:12px;background:var(--c1);border:1px solid rgba(6,214,160,.4);border-radius:13px;padding:12px 15px;font-size:13px;font-weight:700;z-index:999;transform:translateY(130%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.tst.on{transform:translateY(0)}
+.tst.er{border-color:rgba(255,107,157,.4)}
+</style>
+</head>
+<body>
+<div class="gbg"></div>
+<div class="ptcl" id="ptcl"></div>
+<div class="ld off" id="ld"><div class="spin">🌸</div></div>
+<div class="tst" id="tst"><span id="tic">✅</span><span id="tms">Done!</span></div>
+
+<!-- LOGIN -->
+<div class="screen A" id="L">
+  <div class="lbox">
+    <span class="mc">🌸</span>
+    <div class="at">お金トラッカー</div>
+    <div class="as">Okane Budget Tracker</div>
+    <div class="atabs">
+      <button class="atab on" id="atL" onclick="sat('login')">Login</button>
+      <button class="atab" id="atS" onclick="sat('signup')">Sign Up</button>
+    </div>
+    <div class="aerr" id="aerr"></div>
+    <div id="fL">
+      <div class="fr"><label class="fl">Username</label><input class="fi" id="lU" type="text" placeholder="your username" autocomplete="username" autocapitalize="none"></div>
+      <div class="fr"><label class="fl">Password</label><input class="fi" id="lP" type="password" placeholder="your password" autocomplete="current-password"></div>
+      <button class="ba" onclick="dologin()">✨ Login</button>
+    </div>
+    <div id="fS" style="display:none">
+      <div class="fr"><label class="fl">Your Name</label><input class="fi" id="sN" type="text" placeholder="e.g. Rahul" autocomplete="name"></div>
+      <div class="fr"><label class="fl">Username</label><input class="fi" id="sU" type="text" placeholder="choose a username" autocomplete="username" autocapitalize="none"></div>
+      <div class="fr"><label class="fl">Password (min 4 chars)</label><input class="fi" id="sP" type="password" placeholder="••••••" autocomplete="new-password"></div>
+      <button class="ba" onclick="dosignup()">🚀 Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="screen" id="APP">
+  <div class="hdr">
+    <div class="hlogo">
+      <div class="hico">💴</div>
+      <div class="hname">お金トラッカー</div>
+    </div>
+    <div class="hr">
+      <input type="month" class="mpk" id="mpk">
+      <div class="upill"><div class="uav" id="uav">?</div><span id="unm">...</span></div>
+      <button class="bo" onclick="logout()">↩</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tb on" id="tb-d" onclick="gt('d')">🏠 Home</button>
+    <button class="tb" id="tb-a" onclick="gt('a')">➕ Add</button>
+    <button class="tb" id="tb-e" onclick="gt('e')">💸 Expenses</button>
+    <button class="tb" id="tb-i" onclick="gt('i')">💚 Income</button>
+    <button class="tb" id="tb-y" onclick="gt('y')">📊 Year</button>
+  </div>
+  <div class="sa">
+
+    <!-- HOME -->
+    <div class="tp on" id="tp-d">
+      <div class="hero">
+        <div class="ach" id="ach" style="position:absolute;right:13px;bottom:0">🌸</div>
+        <div class="htop">
+          <div><div class="blb">Money Left ✨</div><div class="bnum" style="background:linear-gradient(135deg,#fff,#06D6A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent"><span class="cur">₹</span><span id="rmN">0</span></div></div>
+          <div style="text-align:right"><div class="blb">Today</div><div style="font-size:15px;font-weight:800;color:var(--sk)" id="tdN">₹0</div><div style="font-size:9px;color:var(--mu);margin-top:1px" id="dtS"></div></div>
+        </div>
+        <div class="s4">
+          <div class="sc sg"><div class="sn cg" id="iN">₹0</div><div class="sl">💚 Income</div></div>
+          <div class="sc sp"><div class="sn cp" id="spN">₹0</div><div class="sl">💸 Spent</div></div>
+          <div class="sc so"><div class="sn co" id="bN">₹0</div><div class="sl">🎯 Budget</div></div>
+          <div class="sc so"><div class="sn co" id="pcN">0%</div><div class="sl">📊 Used</div></div>
+        </div>
+        <div class="pi"><span>Budget usage</span><span id="plb">₹0 / ₹0</span></div>
+        <div class="pb"><div class="pf" id="pf" style="width:0%"></div></div>
+      </div>
+      <div class="pnl">
+        <div class="ptit"><div class="ptl"><span class="dot" style="background:var(--gd);box-shadow:0 0 6px rgba(255,209,102,.5)"></span>Set Budget</div></div>
+        <div class="bgtr"><input type="number" class="bgi" id="bgi" placeholder="Monthly budget e.g. 10000" min="0" step="100" inputmode="decimal"><button class="bbg" onclick="saveBgt()">⚡ Set</button></div>
+      </div>
+      <div class="pnl">
+        <div class="ptit"><div class="ptl"><span class="dot" style="background:var(--sk)"></span>Recent</div><span class="bdg" id="cntB">0</span></div>
+        <div class="el" id="recL"><div class="emp"><div class="ei_ic">🌙</div><p style="font-size:12px">Nothing yet~</p></div></div>
+      </div>
+      <div class="pnl">
+        <div class="ptit"><div class="ptl"><span class="dot" style="background:var(--lv)"></span>Breakdown</div></div>
+        <div id="bkdn"><div class="emp" style="padding:10px"><p style="font-size:12px">No data ✨</p></div></div>
+      </div>
+    </div>
+
+    <!-- ADD -->
+    <div class="tp" id="tp-a">
+      <div class="pnl">
+        <div class="ptit"><div class="ptl"><span class="dot"></span>Add Entry</div></div>
+        <div class="ttyp">
+          <button class="tt ae" id="ttE" onclick="stype('expense')">💸 Expense</button>
+          <button class="tt" id="ttI" onclick="stype('income')">💚 Income</button>
+        </div>
+        <div class="cgd" id="cgd"></div>
+        <div class="cpv" id="cpv">🎯</div>
+        <div class="fgd">
+          <div class="fg"><label class="fll">Amount (₹)</label><input type="number" class="fin" id="amI" placeholder="e.g. 50" min="0" inputmode="decimal"></div>
+          <div class="fg"><label class="fll">Date</label><input type="date" class="fin" id="dtI"></div>
+          <div class="fg fl2"><label class="fll">Description</label><input type="text" class="fin" id="dsI" placeholder="Add your expenses"></div>
+        </div>
+        <button class="bsb es" id="sbtn" onclick="addE()">＋ Add Expense</button>
+      </div>
+    </div>
+
+    <!-- EXPENSES -->
+    <div class="tp" id="tp-e">
+      <div class="pnl">
+        <div class="ptit"><div class="ptl"><span class="dot"></span>All Expenses</div><span class="bdg" id="eBdg">0</span></div>
+        <div class="el" id="eL"><div class="emp"><div class="ei_ic">💸</div><p style="font-size:12px">No expenses~</p></div></div>
+      </div>
+    </div>
+
+    <!-- INCOME -->
+    <div class="tp" id="tp-i">
+      <div class="pnl">
+        <div class="ptit"><div class="ptl"><span class="dot" style="background:#4CAF50;box-shadow:0 0 6px rgba(76,175,80,.5)"></span>All Income</div><span class="bdg g" id="iBdg">0</span></div>
+        <div class="el" id="iL"><div class="emp"><div class="ei_ic">💰</div><p style="font-size:12px">No income~</p></div></div>
+      </div>
+    </div>
+
+    <!-- YEAR -->
+    <div class="tp" id="tp-y">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:16px;font-weight:900;background:linear-gradient(135deg,var(--gd),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent">📊 Year Summary</div>
+        <input type="number" id="ypk" style="background:var(--c2);border:1px solid var(--br);color:var(--tx);padding:7px 9px;border-radius:9px;font-size:13px;outline:none;width:78px;font-family:inherit" min="2020" max="2099">
+      </div>
+      <div class="ycs">
+        <div class="yc"><div class="yn cg" id="yrI">₹0</div><div class="yl">Income</div></div>
+        <div class="yc"><div class="yn cp" id="yrS">₹0</div><div class="yl">Spent</div></div>
+        <div class="yc"><div class="yn cm" id="yrN">₹0</div><div class="yl">Saved</div></div>
+      </div>
+      <div class="mog" id="mog"></div>
+      <div class="ro" id="rob" style="display:none">
+        <div class="roh">🎊 Year Round-off</div>
+        <div class="ron" id="ron">₹0</div>
+        <div class="ros" id="ros"></div>
+        <div class="rog" id="rog"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const DBN="OkaneDB",DBV=3;let db;
+function openDB(){return new Promise((r,j)=>{const q=indexedDB.open(DBN,DBV);q.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains("users"))d.createObjectStore("users",{keyPath:"username"});if(!d.objectStoreNames.contains("entries")){const s=d.createObjectStore("entries",{keyPath:"id",autoIncrement:true});s.createIndex("um",["username","month"],{unique:false})}if(!d.objectStoreNames.contains("budgets"))d.createObjectStore("budgets",{keyPath:"key"})};q.onsuccess=e=>{db=e.target.result;r(db)};q.onerror=j})}
+function tx(s,m="readonly"){return db.transaction(s,m).objectStore(s)}
+function dbG(s,k){return new Promise((r,j)=>{const q=tx(s).get(k);q.onsuccess=()=>r(q.result);q.onerror=j})}
+function dbP(s,v){return new Promise((r,j)=>{const q=tx(s,"readwrite").put(v);q.onsuccess=()=>r(q.result);q.onerror=j})}
+function dbD(s,k){return new Promise((r,j)=>{const q=tx(s,"readwrite").delete(k);q.onsuccess=()=>r();q.onerror=j})}
+function dbIdx(s,idx,k){return new Promise((r,j)=>{const q=tx(s).index(idx).getAll(k);q.onsuccess=()=>r(q.result);q.onerror=j})}
+function dbA(s,v){return new Promise((r,j)=>{const q=tx(s,"readwrite").add(v);q.onsuccess=()=>r(q.result);q.onerror=j})}
+async function hp(p){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("okane24"+p));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")}
+
+const CE=[{id:"bus",n:"Bus",e:"🚌",c:"#4A90D9"},{id:"cab",n:"Cab/Auto",e:"🚕",c:"#FFD166"},{id:"metro",n:"Metro",e:"🚇",c:"#C77DFF"},{id:"food",n:"Food",e:"🍜",c:"#FF6B9D"},{id:"grocery",n:"Grocery",e:"🛒",c:"#06D6A0"},{id:"theater",n:"Theater",e:"🎬",c:"#C77DFF"},{id:"cafe",n:"Café",e:"☕",c:"#F4A726"},{id:"shopping",n:"Shopping",e:"🛍️",c:"#FF8C42"},{id:"medical",n:"Medical",e:"💊",c:"#06D6A0"},{id:"gym",n:"Gym",e:"💪",c:"#4A90D9"},{id:"online",n:"Online",e:"💻",c:"#FF6B9D"},{id:"other",n:"Other",e:"💰",c:"#8B949E"}];
+const CI=[{id:"salary",n:"Salary",e:"💼",c:"#4CAF50"},{id:"freelance",n:"Freelance",e:"💻",c:"#7EC8E3"},{id:"pocket",n:"Pocket",e:"👛",c:"#FFD166"},{id:"gift",n:"Gift",e:"🎁",c:"#FF6B9D"},{id:"invest",n:"Returns",e:"📈",c:"#06D6A0"},{id:"other_in",n:"Other",e:"💰",c:"#8B949E"}];
+const MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MF=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MS={bus:"🚌",cab:"🚕",metro:"🚇",food:"🍱",grocery:"🛒",theater:"🎭",cafe:"☕",shopping:"👜",medical:"🏥",gym:"🏋️",online:"💻",other:"🌸",salary:"💼",freelance:"🖥️",pocket:"👛",gift:"🎁",invest:"📈",other_in:"🌸"};
+
+let cu=null,cm="",et="expense",se="bus",si="salary";
+const f=n=>Math.round(n).toLocaleString("en-IN");
+const ld=on=>document.getElementById("ld").className=on?"ld":"ld off";
+
+function sat(t){document.getElementById("fL").style.display=t==="login"?"":"none";document.getElementById("fS").style.display=t==="signup"?"":"none";document.getElementById("atL").className="atab"+(t==="login"?" on":"");document.getElementById("atS").className="atab"+(t==="signup"?" on":"");document.getElementById("aerr").className="aerr"}
+function aer(m){const e=document.getElementById("aerr");e.textContent=m;e.className="aerr on"}
+
+async function dologin(){const u=document.getElementById("lU").value.trim().toLowerCase();const p=document.getElementById("lP").value;if(!u||!p){aer("Fill all fields");return}ld(true);try{const s=await dbG("users",u);if(!s){aer("Username not found");return}const h=await hp(p);if(h!==s.ph){aer("Wrong password");return}cu={u,d:s.d};sessionStorage.setItem("ou",JSON.stringify(cu));enter()}catch(e){aer("Error: "+e.message)}finally{ld(false)}}
+
+async function dosignup(){const n=document.getElementById("sN").value.trim();const u=document.getElementById("sU").value.trim().toLowerCase();const p=document.getElementById("sP").value;if(!n||!u||!p){aer("Fill all fields");return}if(p.length<4){aer("Password min 4 chars");return}if(u.length<3){aer("Username min 3 chars");return}ld(true);try{const ex=await dbG("users",u);if(ex){aer("Username taken");return}const h=await hp(p);await dbP("users",{username:u,ph:h,d:n,ca:Date.now()});cu={u,d:n};sessionStorage.setItem("ou",JSON.stringify(cu));enter()}catch(e){aer("Error: "+e.message)}finally{ld(false)}}
+
+function logout(){sessionStorage.removeItem("ou");cu=null;document.getElementById("L").className="screen A";document.getElementById("APP").className="screen";document.getElementById("lU").value="";document.getElementById("lP").value=""}
+
+function enter(){document.getElementById("L").className="screen";document.getElementById("APP").className="screen A";document.getElementById("unm").textContent=cu.d;document.getElementById("uav").textContent=cu.d.charAt(0).toUpperCase();const now=new Date();cm=now.toISOString().slice(0,7);document.getElementById("mpk").value=cm;document.getElementById("dtI").value=now.toISOString().slice(0,10);document.getElementById("dtS").textContent=now.toLocaleDateString("en-IN",{weekday:"short",month:"short",day:"numeric"});document.getElementById("ypk").value=now.getFullYear();rcat();lm()}
+
+function gt(t){document.querySelectorAll(".tb").forEach(b=>b.classList.remove("on"));document.querySelectorAll(".tp").forEach(p=>p.classList.remove("on"));document.getElementById("tb-"+t).classList.add("on");document.getElementById("tp-"+t).classList.add("on");if(t==="y")ly()}
+
+function stype(t){et=t;const e=t==="expense";document.getElementById("ttE").className="tt"+(e?" ae":"");document.getElementById("ttI").className="tt"+(!e?" ai":"");document.getElementById("sbtn").className="bsb "+(e?"es":"is");document.getElementById("sbtn").textContent=e?"＋ Add Expense":"＋ Add Income";rcat()}
+function rcat(){const cats=et==="expense"?CE:CI;const sel=et==="expense"?se:si;document.getElementById("cgd").innerHTML=cats.map(c=>`<button class="cb${c.id===sel?" on":""}" onclick="scat('${c.id}')"><span class="ce">${c.e}</span><span class="cn">${c.n}</span></button>`).join("");const cat=cats.find(c=>c.id===sel)||cats[0];document.getElementById("cpv").textContent=cat.e;document.getElementById("ach").textContent=MS[sel]||"🌸"}
+function scat(id){if(et==="expense")se=id;else si=id;rcat()}
+
+async function lm(){ld(true);try{const bk=cu.u+"|"+cm;const[br,ens]=await Promise.all([dbG("budgets",bk),dbIdx("entries","um",[cu.u,cm])]);const bg=br?br.a:0;document.getElementById("bgi").value=bg||"";ra(bg,ens||[])}finally{ld(false)}}
+
+function ra(bg,ens){const ex=ens.filter(e=>e.t==="expense");const ic=ens.filter(e=>e.t==="income");const sp=ex.reduce((s,e)=>s+e.a,0);const ic2=ic.reduce((s,e)=>s+e.a,0);const ef=Math.max(bg,ic2)||bg;const rm=ef-sp;const pc=ef>0?Math.min(Math.round(sp/ef*100),100):0;
+document.getElementById("bN").textContent="₹"+f(bg);document.getElementById("iN").textContent="₹"+f(ic2);document.getElementById("spN").textContent="₹"+f(sp);document.getElementById("rmN").textContent=f(rm);document.getElementById("pcN").textContent=pc+"%";document.getElementById("plb").textContent=`₹${f(sp)} / ₹${f(bg)}`;
+const pf=document.getElementById("pf");pf.style.width=pc+"%";pf.className="pf"+(pc>=90?" dg":pc>=70?" wn":"");
+const today=new Date().toISOString().slice(0,10);const ts=ex.filter(e=>(e.d||"").slice(0,10)===today).reduce((s,e)=>s+e.a,0);document.getElementById("tdN").textContent="₹"+f(ts);
+const sorted=[...ens].sort((a,b)=>(b.d||"").localeCompare(a.d||""));rl("recL",sorted.slice(0,40));rl("eL",[...ex].sort((a,b)=>(b.d||"").localeCompare(a.d||"")));rl("iL",[...ic].sort((a,b)=>(b.d||"").localeCompare(a.d||"")));
+document.getElementById("cntB").textContent=ens.length;document.getElementById("eBdg").textContent=ex.length;document.getElementById("iBdg").textContent=ic.length;
+const bc={};ex.forEach(e=>{bc[e.cat]=(bc[e.cat]||0)+e.a});const bk=document.getElementById("bkdn");if(!Object.keys(bc).length){bk.innerHTML='<div class="emp" style="padding:10px"><p style="font-size:12px">No data ✨</p></div>';return}const mx=Math.max(...Object.values(bc));bk.innerHTML=Object.entries(bc).sort((a,b)=>b[1]-a[1]).map(([cat,tot])=>{const c=CE.find(x=>x.id===cat)||CE[CE.length-1];const p=mx>0?(tot/mx*100).toFixed(1):0;return `<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px"><span style="font-size:15px;width:21px;text-align:center">${c.e}</span><div style="flex:1"><div style="font-size:11px;font-weight:700;margin-bottom:3px">${c.n}</div><div style="height:4px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden"><div style="width:${p}%;height:100%;border-radius:100px;background:${c.c}"></div></div></div><div style="font-size:11px;font-weight:800;color:var(--gd);white-space:nowrap">₹${f(tot)}</div></div>`}).join("")}
+
+function rl(cid,ens){const el=document.getElementById(cid);if(!ens.length){el.innerHTML='<div class="emp"><div class="ei_ic">🌙</div><p style="font-size:12px">Nothing yet~</p></div>';return}const bd={};ens.forEach(e=>{const dt=(e.d||"").slice(0,10);if(!bd[dt])bd[dt]=[];bd[dt].push(e)});el.innerHTML=Object.keys(bd).sort((a,b)=>b.localeCompare(a)).map(dt=>{const its=bd[dt];const de=its.filter(e=>e.t==="expense").reduce((s,e)=>s+e.a,0);const di=its.filter(e=>e.t==="income").reduce((s,e)=>s+e.a,0);const dl=new Date(dt+"T00:00:00").toLocaleDateString("en-IN",{weekday:"short",month:"short",day:"numeric"});const tg=(de>0?`<span class="dtg cp">-₹${f(de)}</span>`:"")+( di>0?`<span class="dtg cg"> +₹${f(di)}</span>`:"");return `<div class="dlb">${dl} ${tg}</div>${its.map(e=>itH(e,dl)).join("")}`}).join("")}
+
+function itH(e,dl){const isI=e.t==="income";const cats=isI?CI:CE;const c=cats.find(x=>x.id===e.cat)||cats[cats.length-1];const sg=isI?"+":"-";return `<div class="ei${isI?" ii":""}" id="ei${e.id}"><div class="eic" style="background:${c.c}22;border:1px solid ${c.c}44">${c.e}</div><div class="ein"><div class="ede">${e.ds||c.n}</div><div class="eme">${c.n} · ${dl}</div></div><div class="eam ${isI?"ain":"aex"}">${sg}₹${f(e.a)}</div><div class="eib"><button class="bic" onclick="tedit(${e.id})">✏️</button><button class="bic" onclick="delE(${e.id})">✕</button></div></div><div class="edr" id="er${e.id}"><input class="ei2" id="ed${e.id}d" value="${(e.ds||"").replace(/"/g,"&quot;")}" placeholder="Description"><input class="ei2" id="ed${e.id}a" type="number" value="${e.a}" style="max-width:82px" inputmode="decimal"><button class="bsv" onclick="svedit(${e.id})">Save</button><button class="bcx" onclick="tedit(${e.id})">Cancel</button></div>`}
+
+function tedit(id){document.getElementById("er"+id)?.classList.toggle("on")}
+
+async function svedit(id){const ds=document.getElementById("ed"+id+"d")?.value.trim();const a=parseFloat(document.getElementById("ed"+id+"a")?.value);if(!a||a<=0){toast("Invalid amount!",true);return}ld(true);try{const ens=await dbIdx("entries","um",[cu.u,cm]);const en=ens.find(e=>e.id===id);if(!en){toast("Not found",true);return}en.ds=ds;en.a=a;await dbP("entries",en);toast("Updated! ✨");const[br,es2]=await Promise.all([dbG("budgets",cu.u+"|"+cm),dbIdx("entries","um",[cu.u,cm])]);ra(br?br.a:0,es2||[])}finally{ld(false)}}
+
+async function addE(){const a=parseFloat(document.getElementById("amI").value);const ds=document.getElementById("dsI").value.trim();const dt=document.getElementById("dtI").value;const cid=et==="expense"?se:si;const cats=et==="expense"?CE:CI;const cat=cats.find(c=>c.id===cid);if(!a||a<=0){toast("Enter a valid amount!",true);return}if(!dt){toast("Pick a date!",true);return}ld(true);try{await dbA("entries",{username:cu.u,month:cm,t:et,cat:cid,ds,a,d:dt,ca:Date.now()});document.getElementById("amI").value="";document.getElementById("dsI").value="";toast(`${et==="expense"?"Expense":"Income"} ₹${f(a)} saved! ${cat?.e||""}`);gt("d");await lm()}finally{ld(false)}}
+
+async function delE(id){ld(true);try{await dbD("entries",id);toast("Removed! 🗑️");const[br,es]=await Promise.all([dbG("budgets",cu.u+"|"+cm),dbIdx("entries","um",[cu.u,cm])]);ra(br?br.a:0,es||[])}finally{ld(false)}}
+
+async function saveBgt(){const a=parseFloat(document.getElementById("bgi").value);if(!a||a<=0){toast("Enter a valid budget!",true);return}ld(true);try{await dbP("budgets",{key:cu.u+"|"+cm,username:cu.u,month:cm,a});toast(`Budget ₹${f(a)} set! ✨`);await lm()}finally{ld(false)}}
+
+async function ly(){const yr=document.getElementById("ypk").value;ld(true);try{let ti=0,ts=0;const md=[];for(let m=1;m<=12;m++){const mo=`${yr}-${String(m).padStart(2,"0")}`;const[br,ens]=await Promise.all([dbG("budgets",cu.u+"|"+mo),dbIdx("entries","um",[cu.u,mo])]);const ic=(ens||[]).filter(e=>e.t==="income").reduce((s,e)=>s+e.a,0);const sp=(ens||[]).filter(e=>e.t==="expense").reduce((s,e)=>s+e.a,0);ti+=ic;ts+=sp;md.push({n:MN[m-1],b:br?br.a:0,ic,sp})}const net=ti-ts;document.getElementById("yrI").textContent="₹"+f(ti);document.getElementById("yrS").textContent="₹"+f(ts);const yn=document.getElementById("yrN");yn.textContent=(net>=0?"+":"-")+" ₹"+f(Math.abs(net));yn.className="yn "+(net>=0?"cm":"cp");document.getElementById("mog").innerHTML=md.map(m=>{const ef=Math.max(m.b,m.ic)||0;const pc=ef>0?Math.min(Math.round(m.sp/ef*100),100):0;const has=m.b>0||m.ic>0||m.sp>0;return `<div class="moc" style="${!has?"opacity:.35":""}"><div class="mn">${m.n}</div><div class="mb">${m.b>0?"₹"+f(m.b):'<span style="color:var(--mu);font-size:10px">No budget</span>'}</div>${m.ic>0?`<div class="mi">+₹${f(m.ic)}</div>`:""}${m.sp>0?`<div class="ms">-₹${f(m.sp)}${ef>0?" ("+pc+"%)":""}</div>`:`<div class="ms" style="opacity:.3">No expenses</div>`}<div class="mba"><div class="mf${pc>=100?" ov":""}" style="width:${pc}%"></div></div></div>`}).join("");if(ti>0||ts>0){document.getElementById("rob").style.display="block";document.getElementById("ron").textContent=(net>=0?"+":"-")+" ₹"+f(Math.abs(net));document.getElementById("ros").textContent=net>=0?`🎉 Saved ₹${f(net)} in ${yr}!`:`⚠️ Overspent ₹${f(Math.abs(net))} in ${yr}`;const sr=ti>0?Math.round(net/ti*100):0;const avg=Math.round(ts/12);const top=md.reduce((a,b)=>b.sp>a.sp?b:a,md[0]);document.getElementById("rog").innerHTML=`<div class="roc"><div class="rocn co">₹${f(avg)}</div><div class="rocl">Avg/Month</div></div><div class="roc"><div class="rocn ${sr>=0?"cm":"cp"}">${sr}%</div><div class="rocl">Savings Rate</div></div><div class="roc"><div class="rocn cp">${top.n}</div><div class="rocl">Most Spent</div></div>`}else{document.getElementById("rob").style.display="none"}}finally{ld(false)}}
+
+function toast(m,e=false){const t=document.getElementById("tst");document.getElementById("tms").textContent=m;document.getElementById("tic").textContent=e?"❌":"✅";t.className="tst"+(e?" er":"")+" on";setTimeout(()=>t.classList.remove("on"),3000)}
+
+function sp2(){const c=document.getElementById("ptcl");const sh=["🌸","⭐","✨","💫"];const cl=["#FF6B9D","#7EC8E3","#FFD166","#C77DFF","#06D6A0"];for(let i=0;i<12;i++){const p=document.createElement("div");if(Math.random()>.5){p.textContent=sh[Math.floor(Math.random()*sh.length)];p.style.cssText=`position:absolute;font-size:${Math.random()*10+6}px;left:${Math.random()*100}%;animation:fp ${Math.random()*14+9}s ${Math.random()*9}s linear infinite;opacity:0;pointer-events:none`}else{const sz=Math.random()*3+2;p.style.cssText=`position:absolute;width:${sz}px;height:${sz}px;border-radius:50%;background:${cl[Math.floor(Math.random()*cl.length)]};left:${Math.random()*100}%;animation:fp ${Math.random()*16+9}s ${Math.random()*9}s linear infinite;opacity:0;pointer-events:none`}c.appendChild(p)}}
+
+async function init(){await openDB();sp2();document.getElementById("mpk").addEventListener("change",e=>{cm=e.target.value;lm()});document.getElementById("ypk").addEventListener("change",ly);document.addEventListener("keydown",e=>{if(e.key==="Enter"){if(document.getElementById("fS").style.display==="none")dologin();else dosignup()}});const sv=sessionStorage.getItem("ou");if(sv){try{cu=JSON.parse(sv);const u=await dbG("users",cu.u);if(u){cu.d=u.d;enter();return}}catch(e){}}ld(false)}
+
+init();
+</script>
+</body>
+</html>
